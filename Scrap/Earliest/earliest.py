@@ -1,14 +1,7 @@
 import numpy as np
 
 MAX_LENGTH_CAP_SCHED = 9999
-#MAX_LENGTH_JOB = 9999999999
-"""
-class CapacitySchedule:
-	def __init__(self, schedule, jobCompletionTimeList):
-		self.schedule = schedule
-		self.job = jobCompletionTimeList
-		self.finish = MAX_LENGTH_JOB
-"""
+
 class TimeSlot:
 	def __init__(self,  jobNum, taskNum, taskLen):
 		self.job = jobNum
@@ -27,7 +20,7 @@ def findEndTimes(capSched):
 
 	for i in range(len(capSched)):
 		if (capSched[i].taskLen + i + 1 > endTimes[i]):
-			endTimes[i] = capSched[i].taskLen
+			endTimes[i] = capSched[i].taskLen + i + 1
 
 	return endTimes
 
@@ -43,6 +36,9 @@ def editSchedule(capSched,jobNum, taskNum, taskLen):
 	prevIndex = 0
 	addedElement = False
 
+
+
+	#this loop should be choosing the single most optimal place to add the job
 	for i in range(N):
 
 		#insert job into schedule
@@ -50,6 +46,12 @@ def editSchedule(capSched,jobNum, taskNum, taskLen):
 		#
 		endTimes = findEndTimes(capSched)
 		
+		
+		#assess how 
+
+		#set slack for each job after to be
+
+		#need to have some way to keep track of each job 
 
 		sum = 0
 		for j in range(len(endTimes)):
@@ -71,11 +73,26 @@ def editSchedule(capSched,jobNum, taskNum, taskLen):
 	return newSched
 
 
+
+#need some way to assign the slack 
+
 def scheduler(jobs):
 	
 	capSched = []
+	jobEndtime = jobs[0][0] + 1
+
 	for i in range(len(jobs[0])):
 		time = TimeSlot(1, i+1,jobs[0][i])
+
+		if (jobs[0][i] + i < jobEndtime):
+			time.setSlack(jobEndtime - jobs[0][i])
+		elif (jobs[0][i] + i > jobEndtime):
+			jobEndtime = jobs[0][i]
+			time.setSlack(0)
+		else:
+			time.setSlack(0)
+
+
 		capSched.append(time)
 
 	for i in range(len(jobs)):
@@ -103,11 +120,11 @@ if __name__ == "__main__":
 
 
 	job = [10,8,6,4,2]
-
+	job2 = [2,4,6,8,10]
 	jobs = []
 	jobs.append(job)
-	jobs.append(job)
-	jobs.append(job)
+	#jobs.append(job)
+	#jobs.append(job)
 	#jobs.append(job)
 	#jobs.append(job)
 
